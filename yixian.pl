@@ -101,10 +101,18 @@ turn_part(end, Match, W) :-
     turn_part(begining, match(B, A), W)
 .
 
+fill_cards(A, AF) :-
+    board(A, B),
+    maplist(full_card, B, BF),
+    change_board(A, BF, AF)
+.
+
 run(match(A, B), W) :-
     cultivation(A, AC),
     cultivation(B, BC),
-    (AC > BC -> Match = match(A, B) ; Match = match(B, A)),
+    fill_cards(A, AF),
+    fill_cards(B, BF),
+    (AC > BC -> Match = match(AF, BF) ; Match = match(BF, AF)),
     turn_part(begining, Match, W)
 .
 
@@ -114,7 +122,7 @@ build_board(Hand, [B|Board], C) :-
     CNext is C + 1,
     build_board(RestHand, Board, CNext)
 .
-build_board(Hand, [card("Normal Attack", 1, _, _)|Board], C) :-
+build_board(Hand, [card("Normal Attack", 1)|Board], C) :-
     CNext is C + 1,
     build_board(Hand, Board, CNext)
 .
