@@ -1,4 +1,4 @@
-:- module(cards, [card/4, qi_cost/2, card_effects/2, full_card/2]).
+:- module(card, [card/4, qi_cost/2, card_effects/2, full_card/2]).
 
 card("Normal Attack", 1, 0, [attack(3)]).
 card("Qi Perfusion", 1, 0, [add_qi(2)]).
