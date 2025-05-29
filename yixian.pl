@@ -74,9 +74,12 @@ resolve_effect(attack(X), match(A, B), match(A, BAfter), false) :-
     defense(B, Def),
     XHp is max(X - Def, 0),
     DefAfter is max(Def - X, 0),
-    HpAfter is Hp - XHp,
     change_def(B, DefAfter, BMid),
-    change_hp(BMid, HpAfter, BAfter)
+    (XHp > 0, stack_count(BMid, guard_up, G), G > 0 ->
+        resolve_effect(add_stack(guard_up, -1), match(BMid, A), match(BAfter, A), _)
+    ;
+    HpAfter is Hp - XHp,
+    change_hp(BMid, HpAfter, BAfter))
 .
 resolve_effect(defense(X), match(A, B), match(AAfter, B), false) :-
     defense(A, Def),
@@ -87,6 +90,13 @@ resolve_effect(attack_per_qi(X, S), match(A, B), MatchAfter, ShouldChase) :-
     qi(A, Qi),
     T is X + S * Qi,
     resolve_effect(attack(T), match(A, B), MatchAfter, ShouldChase)
+.
+resolve_effect(injured(X, Es), match(A,B), MatchAfter, ShouldChase) :-
+    hp(B, Hp),
+    resolve_effect(attack(X), match(A,B), match(AMid,BMid), _),
+    hp(BMid, HpAfter),
+    (Hp > HpAfter -> resolve_effects(Es, match(AMid, BMid), MatchAfter, ShouldChase)
+    ; MatchAfter = match(AMid, BMid), ShouldChase = false)
 .
 resolve_effect(add_qi(X), match(A, B), match(AAfter, B), false) :-
     qi(A, Q),
@@ -110,6 +120,9 @@ resolve_effect(consume, match(A, B), match(AAfter, B), false) :-
     nth0(N, Cons, _, Rest),
     nth0(N, ConsAfter, true, Rest),
     change_slots_consumed(A, ConsAfter, AAfter)
+.
+resolve_effect(exhaust_qi, match(A, B), match(AAfter, B), false) :-
+    change_qi(A, 0, AAfter)
 .
 resolve_effect(skip, match(A, B), match(AAfter, B), false) :-
     next_card(A, N),
@@ -148,11 +161,11 @@ play_card(match(A, B), MatchAfter, ShouldChase) :-
     board(A, Board),
     nth0(Next, Board, Card),
     Card,
-    subtract_cost(A, Card, ASub) -> (
+    (subtract_cost(A, Card, ASub) -> (
         resolve_card_effects(Card, match(ASub, B), MatchMid, ShouldChase),
         resolve_effect(skip, MatchMid, MatchAfter, _)
     )
-    ; resolve_effect(add_qi(1), match(A, B), MatchAfter, ShouldChase)
+    ; resolve_effect(add_qi(1), match(A, B), MatchAfter, ShouldChase))
 .
 
 begining_of_turn_effects(Match, MatchAfter) :-
