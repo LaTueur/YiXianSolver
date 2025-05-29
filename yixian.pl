@@ -30,22 +30,32 @@ subtract_cost(P, C, P) :- qi_cost(C, 0).
 subtract_cost(P, C, NP) :- 
     qi(P, Q),
     qi_cost(C, QC),
-    Q >= QC,
-    NQ is Q - QC,
+    (stack_count(P, reduce_spirit_sword_cost, X),
+        card_name(C, N),
+        sub_string(N, _, _, _, "Spirit Sword")
+    -> RC is QC - X
+    ; RC = QC),
+    Q >= RC,
+    NQ is Q - RC,
     change_qi(P, NQ, NP)
 .
 
+increase_stack([], X, [X]).
 increase_stack([stack(X, Y)|Ys], stack(X, N), [stack(X, Z)|Ys]) :-
     Z is Y + N, !
 .
 increase_stack([Y|Ys], X, [Y|Zs]) :- increase_stack(Ys, X, Zs).
+
+stack_count(P, X, N) :- statuses(P, Stat), list_stack_count(Stat, X, N).
+
+list_stack_count([stack(X, N)|_], X, N) :- !.
+list_stack_count([_|Cs], X, N) :- list_stack_count(Cs, X, N).
 
 slot_consumed(S, A) :-
     slots_consumed(A, Slots),
     nth0(S, Slots, Consumed),
     Consumed
 .
-
 
 resolve_card_effects(Card, M, MA, SC) :-
     card_effects(Card, E),
@@ -72,6 +82,11 @@ resolve_effect(defense(X), match(A, B), match(AAfter, B), false) :-
     defense(A, Def),
     DefAfter is Def + X,
     change_def(A, DefAfter, AAfter)
+.
+resolve_effect(attack_per_qi(X, S), match(A, B), MatchAfter, ShouldChase) :-
+    qi(A, Qi),
+    T is X + S * Qi,
+    resolve_effect(attack(T), match(A, B), MatchAfter, ShouldChase)
 .
 resolve_effect(add_qi(X), match(A, B), match(AAfter, B), false) :-
     qi(A, Q),
@@ -100,7 +115,23 @@ resolve_effect(skip, match(A, B), match(AAfter, B), false) :-
     next_card(A, N),
     NAfter is (N + 1) mod 8,
     change_next_card(A, NAfter, AMid),
-    (slot_consumed(NAfter, A) -> resolve_effect(skip, match(A, B), match(AMid, B), false) ; AAfter = AMid)
+    (slot_consumed(NAfter, A) -> resolve_effect(skip, match(AMid, B), match(AAfter, B), false) ; AAfter = AMid)
+.
+resolve_effect(halve_defense, match(A, B), match(AAfter, B), false) :-
+    defense(A, Def),
+    DefAfter is Def div 2,
+    change_def(A, DefAfter, AAfter)
+.
+resolve_effect(add_qi_per_turns, match(A, B), match(AAfter, B), false) :-
+    stack_count(A, qi_per_two_turns, X) ->
+    (stack_count(A, half_qi, Y) -> true ; Y = 0 ),
+    T is X + Y,
+    Add is T div 2,
+    Left is T mod 2,
+    Change is Left - Y,
+    resolve_effect(add_qi(Add), match(A, B), match(AMid, B), _),
+    resolve_effect(add_stack(half_qi, Change), match(AMid, B), match(AAfter, B), _)
+    ; AAfter = A
 .
 
 has_winner(match(A, B), B) :-
@@ -124,7 +155,9 @@ play_card(match(A, B), MatchAfter, ShouldChase) :-
     ; resolve_effect(add_qi(1), match(A, B), MatchAfter, ShouldChase)
 .
 
-begining_of_turn_effects(Match, Match).
+begining_of_turn_effects(Match, MatchAfter) :-
+    resolve_effects([halve_defense, add_qi_per_turns], Match, MatchAfter, _)
+.
 end_of_turn_effects(Match, Match).
 
 turn_part(_, Match, W) :- has_winner(Match, W), !.
@@ -144,12 +177,6 @@ turn_part(second_card, Match, W) :-
 turn_part(end, Match, W) :- 
     end_of_turn_effects(Match, match(A, B)),
     turn_part(begining, match(B, A), W)
-.
-
-fill_cards(A, AF) :-
-    board(A, B),
-    maplist(full_card, B, BF),
-    change_board(A, BF, AF)
 .
 
 run(match(A, B), W) :-
@@ -174,7 +201,6 @@ build_board(Hand, [card("Normal Attack", 1)|Board], C) :-
 
 winning_board(R, B) :-
     riddle(R, C, H, E),
-    true,
     build_board(H, B, 0),
     change_board(C, B, CTest),
     run(match(E, CTest), W),

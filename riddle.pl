@@ -67,15 +67,14 @@ riddle(second_riddle
     )
 )
 , [
-    card("Transforming", 1),
-    card("Giant Tiger Spirit Sword", 3),
-    card("Spiritage Sword", 1),
-    card("Giant Whale Spirit Sword", 2),
-    card("Giant Roc Spirit Sword", 2),
     card("Spirit Gather Citta-Dharma", 1),
     card("Centibird Spirit Sword Rythm", 2),
+    card("Giant Roc Spirit Sword", 2),
+    card("Giant Tiger Spirit Sword", 3),
+    card("Giant Kun Spirit Sword", 2),
+    card("Giant Whale Spirit Sword", 2),
     card("Giant Kun Spirit Sword", 1),
-    card("Giant Kun Spirit Sword", 2)
+    card("Transforming", 1)
 ]
 , player(
     "Practice Puppet",

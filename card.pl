@@ -1,4 +1,4 @@
-:- module(card, [card/4, qi_cost/2, card_effects/2, full_card/2]).
+:- module(card, [card/4, card_name/2, qi_cost/2, card_effects/2, full_card/2]).
 
 card("Normal Attack", 1, 0, [attack(3)]).
 card("Qi Perfusion", 1, 0, [add_qi(2)]).
@@ -18,7 +18,7 @@ card("Spirit Gather Citta-Dharma", 1, 0, [add_qi(1), add_stack(qi_per_two_turns,
 card("Spirit Gather Citta-Dharma", 2, 0, [add_qi(1), add_stack(qi_per_two_turns, 2), consume]).
 card("Centibird Spirit Sword Rythm", 2, 0, [add_qi(3), add_stack(reduce_spirit_sword_cost, 1), consume]).
 
-
+card_name(card(A, _, _, _), A).
 qi_cost(card(_, _, C, _), C).
 card_effects(card(_, _, _, D), D).
 
