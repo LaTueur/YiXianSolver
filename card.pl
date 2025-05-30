@@ -1,4 +1,4 @@
-:- module(card, [card/4, card_name/2, qi_cost/2, card_effects/2, full_card/2]).
+:- module(card, [card/4, card_name/2, qi_cost/2, card_effects/2, full_card/2, spirit_sword/1]).
 
 card("Normal Attack", 1, 0, [attack(3)]).
 card("Qi Perfusion", 1, 0, [add_qi(2)]).
@@ -31,3 +31,15 @@ qi_cost(card(_, _, C, _), C).
 card_effects(card(_, _, _, D), D).
 
 full_card(card(N, L), card(N, L, _, _)).
+
+spirit_sword(C) :- card_name(C, N), spirit_sword_name(N).
+
+contains_spirit_sword(N) :- sub_string(N, _, _, _, "Spirit Sword").
+
+:- dynamic spirit_sword_name/1.
+:- retractall(spirit_sword_name(_)).
+:- findall(X, card(X, _, _, _), Xs),
+    list_to_set(Xs, Ys),
+    include(contains_spirit_sword, Ys, Zs),
+    forall(member(N, Zs), assertz(spirit_sword_name(N)))
+.

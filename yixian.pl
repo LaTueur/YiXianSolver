@@ -31,9 +31,8 @@ subtract_cost(P, C, NP) :-
     qi(P, Q),
     qi_cost(C, QC),
     (stack_count(P, reduce_spirit_sword_cost, X),
-        card_name(C, N),
-        sub_string(N, _, _, _, "Spirit Sword")
-    -> RC is QC - X
+        spirit_sword(C)
+    -> RC is max(QC - X, 0)
     ; RC = QC),
     Q >= RC,
     NQ is Q - RC,
