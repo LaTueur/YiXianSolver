@@ -201,3 +201,55 @@ riddle(sword_intent_1
         []
     )
 )).
+riddle(sword_intent_2
+, player(
+    "LajosTueur",
+    num_values(
+        36,
+        62,
+        62,
+        0,
+        0
+    ),
+    [],
+    board_infos(
+        0,
+        [],
+        []
+    )
+)
+, [
+    card("Transforming Spirits Rhythm", 3),
+    card("Cloud Dance Rythm", 2),
+    card("Sword Defence", 2),
+    card("Flying Fang Sword", 2),
+    card("Inspiration Sword", 2),
+    card("Cloud Sword - Piercing the Star", 2),
+    card("Flow Cloud Chaos Sword", 2),
+    card("Sword Slash", 2)
+]
+, player(
+    "Practice Puppet",
+    num_values(
+        54,
+        113,
+        113,
+        0,
+        0
+    ),
+    [],
+    board_infos(
+        0,
+        [
+            card("Contemplate Spirits Rythm", 1),
+            card("Contemplate Spirits Rythm", 1),
+            card("Contemplate Spirits Rythm", 1),
+            card("Contemplate Spirits Rythm", 1),
+            card("Contemplate Spirits Rythm", 1),
+            card("Contemplate Spirits Rythm", 1),
+            card("Flow Cloud Chaos Sword", 3),
+            card("Normal Attack", 1)
+        ],
+        []
+    )
+)).

@@ -39,9 +39,10 @@ subtract_cost(P, C, NP) :-
     change_qi(P, NQ, NP)
 .
 
+increase_stack([], stack(_, X), []) :- X =< 0, !.
 increase_stack([], X, [X]).
 increase_stack([stack(X, Y)|Ys], stack(X, N), Ys) :-
-    0 is Y + N, !
+    Z is Y + N, Z =< 0, !
 .
 increase_stack([stack(X, Y)|Ys], stack(X, N), [stack(X, Z)|Ys]) :-
     Z is Y + N, !
@@ -120,6 +121,11 @@ resolve_effect(add_stack(X, N), match(A, B), match(AAfter, B), false) :-
     statuses(A, Stat),
     increase_stack(Stat, stack(X, N), StatAfter),
     change_statuses(A, StatAfter, AAfter)
+.
+resolve_effect(add_stack_per_qi(X, M), match(A, B), MatchAfter, false) :-
+    qi(A, Q),
+    N is min(Q, M),
+    resolve_effect(add_stack(X, N), match(A, B), MatchAfter, false)
 .
 resolve_effect(consume, match(A, B), match(AAfter, B), false) :-
     next_card(A, N),
@@ -223,6 +229,12 @@ build_board(Hand, [B|Board], C) :-
 build_board(Hand, [card("Normal Attack", 1)|Board], C) :-
     CNext is C + 1,
     build_board(Hand, Board, CNext)
+.
+
+test_stuff(R, W) :-
+    riddle(R, C, H, E),
+    change_board(C, H, CTest),
+    run(match(E, CTest), W)
 .
 
 winning_board(R, B) :-

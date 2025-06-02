@@ -5,6 +5,7 @@ card("Qi Perfusion", 1, 0, [add_qi(2)]).
 card("Guard Qi", 3, 0, [add_qi(3), defense(5)]).
 card("Transforming Spirits Rhythm", 1, 0, [add_qi(3)]).
 card("Transforming Spirits Rhythm", 2, 0, [add_qi(4)]).
+card("Transforming Spirits Rhythm", 3, 0, [add_qi(5)]).
 card("Spiritage Sword", 1, 0, [add_qi(2), more_qi_than(2, [attack(2), attack(2)])]).
 card("Spiritage Sword", 3, 0, [add_qi(4), more_qi_than(4, [attack(2), attack(2)])]).
 card("Giant Roc Spirit Sword", 1, 2, [attack(9), more_qi_than(0, [chase])]).
@@ -31,6 +32,11 @@ card("Flying Fang Sword", 1, 1, [injured(8, [add_stack(used_sword_intent, -1)])]
 card("Flying Fang Sword", 2, 1, [injured(11, [add_stack(used_sword_intent, -1)])]).
 card("Contemplate Spirits Rythm", 1, 0, [add_qi(1), add_stack(sword_intent, 3)]).
 card("Tri-Peak Sword", 1, 0, [attack(3), attack(3), attack(3)]).
+card("Cloud Dance Rythm", 2, 0, [add_qi(3), defense(3), add_stack(sword_intent, 3)]).
+card("Cloud Sword - Piercing the Star", 2, 0, [add_qi(3), attack_per_qi(0, 1)]).
+card("Inspiration Sword", 2, 0, [injured(12, [add_stack_per_qi(sword_intent, 12)])]).
+card("Flow Cloud Chaos Sword", 2, 1, Effect) :- length(Effect, 5), maplist(=(attack(2)), Effect).
+card("Flow Cloud Chaos Sword", 3, 1, Effect) :- length(Effect, 6), maplist(=(attack(2)), Effect).
 
 card_name(card(A, _, _, _), A).
 qi_cost(card(_, _, C, _), C).
