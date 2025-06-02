@@ -25,6 +25,12 @@ card("Spiritage Elixir", 1, 0, [add_qi(4), consume]).
 card("Ice Spirit Guard Elixir", 1, 1, [add_stack(guard_up, 2), consume]).
 card("Flying Spirit Shade Sword", 1, 0, Effect) :- length(Effect, 4), maplist(=(injured(1, [add_qi(1)])), Effect).
 card("Dharma Spirit Sword", 2, 0, [attack_per_qi(5, 6), exhaust_qi]).
+card("Sword Slash", 2, 0, [attack(5), add_stack(sword_intent, 3)]).
+card("Sword Defence", 2, 0, [defense(5), add_stack(sword_intent, 3)]).
+card("Flying Fang Sword", 1, 1, [injured(8, [add_stack(used_sword_intent, -1)])]).
+card("Flying Fang Sword", 2, 1, [injured(11, [add_stack(used_sword_intent, -1)])]).
+card("Contemplate Spirits Rythm", 1, 0, [add_qi(1), add_stack(sword_intent, 3)]).
+card("Tri-Peak Sword", 1, 0, [attack(3), attack(3), attack(3)]).
 
 card_name(card(A, _, _, _), A).
 qi_cost(card(_, _, C, _), C).

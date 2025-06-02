@@ -40,6 +40,9 @@ subtract_cost(P, C, NP) :-
 .
 
 increase_stack([], X, [X]).
+increase_stack([stack(X, Y)|Ys], stack(X, N), Ys) :-
+    0 is Y + N, !
+.
 increase_stack([stack(X, Y)|Ys], stack(X, N), [stack(X, Z)|Ys]) :-
     Z is Y + N, !
 .
@@ -58,7 +61,8 @@ slot_consumed(S, A) :-
 
 resolve_card_effects(Card, M, MA, SC) :-
     card_effects(Card, E),
-    resolve_effects(E, M, MA, SC)
+    append(E, [clear_sword_intent], EF),
+    resolve_effects(EF, M, MA, SC)
 .
 
 resolve_effects([], match(A, B), match(A, B), false).
@@ -68,14 +72,18 @@ resolve_effects([E|Es], match(A, B), match(AAfter, BAfter), ShouldChase) :-
     ShouldChase = ((ShouldChaseMid ; ShouldChaseEnd), !)
 .
 
-resolve_effect(attack(X), match(A, B), match(A, BAfter), false) :-
+resolve_effect(attack(XBase), match(A, B), match(AAfter, BAfter), false) :-
     hp(B, Hp),
     defense(B, Def),
+    (stack_count(A, sword_intent, SI) ->
+        X is XBase + SI,
+        resolve_effect(add_stack(used_sword_intent, 1), match(A, B), match(AAfter, B), _)
+    ;   X = XBase, AAfter = A),
     XHp is max(X - Def, 0),
     DefAfter is max(Def - X, 0),
     change_def(B, DefAfter, BMid),
     (XHp > 0, stack_count(BMid, guard_up, G), G > 0 ->
-        resolve_effect(add_stack(guard_up, -1), match(BMid, A), match(BAfter, A), _)
+        resolve_effect(add_stack(guard_up, -1), match(BMid, AAfter), match(BAfter, AAfter), _)
     ;
     HpAfter is Hp - XHp,
     change_hp(BMid, HpAfter, BAfter))
@@ -144,6 +152,12 @@ resolve_effect(add_qi_per_turns, match(A, B), match(AAfter, B), false) :-
     resolve_effect(add_qi(Add), match(A, B), match(AMid, B), _),
     resolve_effect(add_stack(half_qi, Change), match(AMid, B), match(AAfter, B), _)
     ; AAfter = A
+.
+resolve_effect(clear_sword_intent, match(A, B), MatchAfter, false) :-
+    stack_count(A, used_sword_intent, X) ->
+    stack_count(A, sword_intent, Y),
+    resolve_effects([add_stack(used_sword_intent, -X), add_stack(sword_intent, -Y)], match(A, B), MatchAfter, _)
+    ; MatchAfter = match(A, B)
 .
 
 has_winner(match(A, B), B) :-

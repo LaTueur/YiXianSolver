@@ -1,6 +1,6 @@
 :- module(riddle, [riddle/4]).
 
-riddle(first_riddle
+riddle(spirit_sword_1
 , player(
     "LajosTueur",
     num_values(
@@ -49,7 +49,7 @@ riddle(first_riddle
         []
     )
 )).
-riddle(second_riddle
+riddle(spirit_sword_2
 , player(
     "LajosTueur",
     num_values(
@@ -101,8 +101,7 @@ riddle(second_riddle
         []
     )
 )).
-
-riddle(third_riddle
+riddle(spirit_sword_3
 , player(
     "LajosTueur",
     num_values(
@@ -147,6 +146,57 @@ riddle(third_riddle
             card("Egret Spirit Sword", 2),
             card("Egret Spirit Sword", 2),
             card("Egret Spirit Sword", 2)
+        ],
+        []
+    )
+)).
+riddle(sword_intent_1
+, player(
+    "LajosTueur",
+    num_values(
+        22,
+        52,
+        52,
+        0,
+        0
+    ),
+    [],
+    board_infos(
+        0,
+        [],
+        []
+    )
+)
+, [
+    card("Sword Defence", 2),
+    card("Sword Slash", 2),
+    card("Flying Fang Sword", 1),
+    card("Flying Fang Sword", 2),
+    card("Contemplate Spirits Rythm", 1),
+    card("Contemplate Spirits Rythm", 1),
+    card("Tri-Peak Sword", 1)
+]
+, player(
+    "Practice Puppet",
+    num_values(
+        35,
+        93,
+        93,
+        0,
+        0
+    ),
+    [],
+    board_infos(
+        0,
+        [
+            card("Contemplate Spirits Rythm", 1),
+            card("Contemplate Spirits Rythm", 1),
+            card("Contemplate Spirits Rythm", 1),
+            card("Contemplate Spirits Rythm", 1),
+            card("Contemplate Spirits Rythm", 1),
+            card("Contemplate Spirits Rythm", 1),
+            card("Contemplate Spirits Rythm", 1),
+            card("Tri-Peak Sword", 1)
         ],
         []
     )
