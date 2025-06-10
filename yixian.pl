@@ -224,7 +224,6 @@ build_board(Hand, Board) :-
     length(Hand, N),
     MinNA is max(8 - N, 0),
     between(MinNA, 8, NA),
-    writeln(NA),
     build_board(Hand, Board, 0, NA)
 .
 
