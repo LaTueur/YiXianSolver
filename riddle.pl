@@ -219,14 +219,14 @@ riddle(sword_intent_2
     )
 )
 , [
+    card("Sword Slash", 2),
     card("Transforming Spirits Rhythm", 3),
     card("Cloud Dance Rythm", 2),
     card("Sword Defence", 2),
     card("Flying Fang Sword", 2),
     card("Inspiration Sword", 2),
     card("Cloud Sword - Piercing the Star", 2),
-    card("Flow Cloud Chaos Sword", 2),
-    card("Sword Slash", 2)
+    card("Flow Cloud Chaos Sword", 2)
 ]
 , player(
     "Practice Puppet",

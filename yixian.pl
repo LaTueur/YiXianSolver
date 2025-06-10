@@ -220,15 +220,26 @@ run(match(A, B), W) :-
     turn_part(begining, Match, W)
 .
 
-build_board(_, [], 8) :- !.
-build_board(Hand, [B|Board], C) :-
+build_board(Hand, Board) :-
+    length(Hand, N),
+    MinNA is max(8 - N, 0),
+    between(MinNA, 8, NA),
+    writeln(NA),
+    build_board(Hand, Board, 0, NA)
+.
+
+build_board(_, [], 8, 0) :- !.
+build_board(Hand, [B|Board], C, NA) :-
+    NA =< 8 - C,
     select(B, Hand, RestHand),
     CNext is C + 1,
-    build_board(RestHand, Board, CNext)
+    build_board(RestHand, Board, CNext, NA)
 .
-build_board(Hand, [card("Normal Attack", 1)|Board], C) :-
+build_board(Hand, [card("Normal Attack", 1)|Board], C, NA) :-
+    NA > 0,
     CNext is C + 1,
-    build_board(Hand, Board, CNext)
+    NANext is NA - 1,
+    build_board(Hand, Board, CNext, NANext)
 .
 
 test_stuff(R, W) :-
@@ -239,9 +250,11 @@ test_stuff(R, W) :-
 
 winning_board(R, B) :-
     riddle(R, C, H, E),
-    build_board(H, B, 0),
+    build_board(H, B),
     change_board(C, B, CTest),
     run(match(E, CTest), W),
     player_name(C, Name),
     player_name(W, Name)
 .
+
+measure(R, B) :- time(winning_board(R, B)).
